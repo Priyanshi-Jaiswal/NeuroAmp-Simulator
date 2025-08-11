@@ -1,0 +1,66 @@
+<div style="width: 98%; margin: 0 1%;">
+    <div class="user">
+        <div class="project">
+            <h6>List Devices</h6>
+        </div>
+
+        <div>
+            <div class="buttons">
+                <div class="icon-group left-group">
+                    <button mat-icon-button class="button" matTooltip="Add Device" (click)="navigateToAddDevicePage()">
+                        <mat-icon>add_box</mat-icon>
+                    </button>
+
+                    <button mat-icon-button class="button" matTooltip="Add Bulk Device" (click)="addBulkDevice()">
+                        <mat-icon>library_add</mat-icon>
+                    </button>
+
+                    <button mat-icon-button class="button" matTooltip="Edit Device" (click)="navigateToEditDevicePage()">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+
+                    <button mat-icon-button class="button" matTooltip="Delete" (click)="deleteDevice()">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </div>
+
+                <div class="icon-group left-group">
+                    <button mat-icon-button class="button" matTooltip="Start All" (click)="startSelectedDevices()">
+                        <mat-icon>play_arrow</mat-icon>
+                    </button>
+                
+                    <button mat-icon-button class="button" matTooltip="Stop All" (click)="stopSelectedDevices()">
+                        <mat-icon>pause</mat-icon>
+                    </button>
+
+                    <button mat-icon-button class="button" matTooltip="Start Uplinks" (click)="startAllUplinkDevice()">
+                        <mat-icon style="transform: rotate(180deg);">get_app</mat-icon>
+                      </button>
+
+                      <button mat-icon-button class="button" matTooltip="Stop Uplinks" (click)="stopAllUplinkDevice()">
+                        <mat-icon>cancel</mat-icon>
+                      </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ag-grid-angular class="ag-theme-quartz table" 
+        [rowData]="devices" 
+        [columnDefs]="colDefs" 
+        [rowSelection]="'multiple'"
+        [animateRows]="true"
+        [pagination]="true"
+        [paginationPageSizeSelector]="paginationPageSizeSelector" 
+        [getRowId]="getRowId" 
+        (rowSelected)="onRowSelected($event)" 
+        (gridReady)="onGridReady($event)">
+    </ag-grid-angular>
+
+    <div *ngIf="isLoading" class="loading-overlay">
+        Loading devices...
+      </div>
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+</div>

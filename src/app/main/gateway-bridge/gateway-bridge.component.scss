@@ -1,0 +1,100 @@
+$primary-blue: rgb(35, 67, 102);
+$dark-blue-text: rgb(31, 49, 71);
+$gray-text: #616161;
+$light-gray-bg: #F5F5F5;
+$border-color: #E0E0E0;
+$input-border-color: #D1D5DB;
+$input-focus-border: #93C5FD;
+$input-focus-shadow: rgba(147, 197, 253, 0.5);
+$card-border-color: #F0F0F0;
+
+.gateway-bridge-container {
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    margin: 1rem auto;
+    // max-width: 800px;
+    width: 98%;
+  
+    @media (min-width: 768px) {
+      padding: 2rem;
+    }
+  
+    .gateway-bridge-header {
+      margin-bottom: 3rem;
+    //   background-color: rgba(231, 231, 231, 0.95);
+
+  h5 {
+    font-weight: 500; 
+    color: rgb(31, 49, 71);
+    // padding-left: 1rem;
+  }
+    }
+  
+    .gateway-bridge-form {
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+  
+        .form-group {
+          display: flex;
+          flex-direction: column;
+          
+          label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+          }
+  
+          .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            color: #495057;
+            background-color: #fff;
+            border: 1px solid #ced4da;
+            border-radius: 0.375rem;
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  
+            &:focus {
+              border-color: #80bdff;
+              outline: 0;
+              box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            }
+          }
+  
+          .form-text {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin-top: 0.25rem;
+          }
+        }
+  
+        .card-footer.add-device-footer-custom {
+            display: flex;
+            justify-content: flex-end;
+            padding: 1rem 0;
+            border-top: 1px solid $card-border-color;
+            margin-top: 2rem;
+          }
+          
+          .save-btn-custom {
+            background-color: $primary-blue;
+            color: #fff;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 0.25rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+          
+            &:hover {
+              background-color: darken($primary-blue, 10%);
+            }
+          }
+      }
+    }
+  }
