@@ -23,11 +23,6 @@ h5 {
 .hamburger {
     margin: 0 1vh;
     margin-top: 1vh;
-    // width: 2rem;
-
-    mat-icon {
-        // width: 1rem;
-    }
 }
 
 img {
@@ -51,8 +46,8 @@ img {
 
 p {
     margin: 0;
-    font-size: 1.25rem;
-    margin-top: 2px;
+    font-size: 0.95rem;
+    // margin-top: 2px;
 }
 
 ::ng-deep .mat-mdc-menu-content {

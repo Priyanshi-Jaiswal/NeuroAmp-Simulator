@@ -3,8 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AppService } from '../../app.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ColDef, ICellRendererParams, RowSelectedEvent } from 'ag-grid-community';
-import { ActionButtonComponent } from '../action-button.component'; 
-
+import { ActionButtonComponent } from '../action-button/action-button.component';
 
 @Component({
   selector: 'app-gateways',

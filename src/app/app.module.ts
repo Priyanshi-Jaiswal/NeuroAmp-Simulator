@@ -47,6 +47,8 @@ import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
 import { EditDeviceComponent } from './main/devices/edit-device/edit-device.component';
 import { EditGatewayComponent } from './main/gateways/edit-gateway/edit-gateway.component';
 import { AddBulkDevicesComponent } from './main/devices/add-bulk-devices/add-bulk-devices.component';
+import { ActionButtonComponent } from './main/action-button/action-button.component';
+import { LogPanelComponent } from './main/action-button/log-panel/log-panel.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +66,9 @@ import { AddBulkDevicesComponent } from './main/devices/add-bulk-devices/add-bul
     GatewayBridgeComponent,
     EditDeviceComponent,
     EditGatewayComponent,
-    AddBulkDevicesComponent
+    AddBulkDevicesComponent,
+    ActionButtonComponent,
+    LogPanelComponent
   ],
   imports: [
     BrowserModule,

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AppService } from '../../app.service';
 import { Router } from '@angular/router';
-import { ColDef, RowSelectedEvent, ICellRendererParams, GridApi, CellClickedEvent } from 'ag-grid-community';
-import { ActionButtonComponent } from '../action-button.component';
+import { ColDef, RowSelectedEvent, ICellRendererParams, GridApi } from 'ag-grid-community';
+import { ActionButtonComponent } from '../action-button/action-button.component';
+import { LogPanelComponent } from '../action-button/log-panel/log-panel.component';
 
 @Component({
   selector: 'app-devices',
@@ -17,6 +18,9 @@ export class DevicesComponent implements OnInit {
   errorMessage: string | null = null;
   private gridApi!: GridApi;
   getRowId = (params: any) => params.data.devEUI;
+
+  public showLogPanel = false;
+  public selectedDevEuiForLogs: string | null = null;
 
   colDefs: ColDef[] = [
     { field: "select", headerName: "Select", checkboxSelection: true, flex: 0.5 },
@@ -45,9 +49,11 @@ export class DevicesComponent implements OnInit {
       suppressMenu: true,
       filter: false,
       sortable: false,
-      cellRendererParams: {
+      cellRendererParams: (params: ICellRendererParams) => ({
+        ...params,
         type: 'device',
-      }
+        onViewLogs: (devEui: string) => this.onViewLogs(devEui)
+      })
     }
   ];
   paginationPageSizeSelector = [5, 10, 20, 50, 100, 200];
@@ -71,7 +77,8 @@ export class DevicesComponent implements OnInit {
       next: (response) => {
         this.devices = response.response.map((device: any) => ({
           ...device,
-          currentStatus: device.currentStatus || 'paused'
+          currentStatus: device.currentStatus || 'paused',
+          uplinkStatus: device.uplinkStatus || 'stopped'
         }));
         this.isLoading = false;
         console.log('Devices loaded:', this.devices);
@@ -89,6 +96,24 @@ export class DevicesComponent implements OnInit {
     console.log('Selected Rows:', this.selectedRow);
   }
 
+  // --- New Logic for Button Activation (Changed to public) ---
+  public hasSelection(): boolean {
+    return this.selectedRow.length > 0;
+  }
+  public allSelectedArePaused(): boolean {
+    return this.hasSelection() && this.selectedRow.every(device => device.currentStatus === 'paused');
+  }
+  public allSelectedArePlaying(): boolean {
+    return this.hasSelection() && this.selectedRow.every(device => device.currentStatus === 'playing');
+  }
+  public allSelectedUplinkIsStopped(): boolean {
+    return this.hasSelection() && this.selectedRow.every(device => device.uplinkStatus === 'stopped');
+  }
+  public allSelectedUplinkIsRunning(): boolean {
+    return this.hasSelection() && this.selectedRow.every(device => device.uplinkStatus === 'running');
+  }
+
+  // --- Existing Methods with Updates ---
   navigateToAddDevicePage(): void {
     this.router.navigate(['/addDevices']);
     console.log('Navigating to Add New Device page');
@@ -99,66 +124,64 @@ export class DevicesComponent implements OnInit {
     console.log('Navigating to Add New Device page');
   }
 
-
   startSelectedDevices(): void {
     const devEUIsToStart = this.selectedRow.map(device => device.devEUI);
-    if (devEUIsToStart.length > 0) {
+    if (this.allSelectedArePaused()) {
       this.appService.startDevice(devEUIsToStart).subscribe({
         next: (response) => {
           console.log('All simulator started:', response);
-          // Update the local data and the grid using applyTransaction
-          const updatedDevices = this.selectedRow.map(device => ({ ...device, currentStatus: 'playing' }));
-          this.gridApi.applyTransaction({ update: updatedDevices });
-          // Force the grid to re-render the cells to show the new status
+          // Update the local selectedRow array with the new status
+          this.selectedRow = this.selectedRow.map(device => ({ ...device, currentStatus: 'playing' }));
+
+          // Update the grid's internal data
+          this.gridApi.applyTransaction({ update: this.selectedRow });
           this.gridApi.refreshCells({ rowNodes: this.gridApi.getSelectedNodes(), force: true });
-          // TODO: Replace this with a custom success dialog in your app
-          // alert(response.message);
         },
         error: (error) => {
           console.error('Error starting simulator:', error);
-          // TODO: Replace this with a custom error dialog in your app
           alert('Failed to start simulator.');
         }
       });
     } else {
-      // TODO: Replace this with a custom dialog
-      alert('Please select devices to start simulator.');
+      alert('Please select devices that are not already joined.');
     }
   }
 
   stopSelectedDevices(): void {
     const devEUIsToStop = this.selectedRow.map(device => device.devEUI);
-    if (devEUIsToStop.length > 0) {
+    if (this.allSelectedArePlaying()) {
       this.appService.stopDevice(devEUIsToStop).subscribe({
         next: (response) => {
           console.log('All simulator stopped:', response);
-          // Update the local data and the grid using applyTransaction
-          const updatedDevices = this.selectedRow.map(device => ({ ...device, currentStatus: 'paused' }));
-          this.gridApi.applyTransaction({ update: updatedDevices });
-          // Force the grid to re-render the cells to show the new status
+          // Update the local selectedRow array with the new status
+          this.selectedRow = this.selectedRow.map(device => ({ ...device, currentStatus: 'paused', uplinkStatus: 'stopped' }));
+
+          // Update the grid's internal data
+          this.gridApi.applyTransaction({ update: this.selectedRow });
           this.gridApi.refreshCells({ rowNodes: this.gridApi.getSelectedNodes(), force: true });
-          // TODO: Replace this with a custom success dialog in your app
-          // alert(response.message);
         },
         error: (error) => {
           console.error('Error stopping simulator:', error);
-          // TODO: Replace this with a custom error dialog in your app
           alert('Failed to stop simulator.');
         }
       });
     } else {
-      alert('Please select devices to stop simulator.');
+      alert('Please select devices that are already joined.');
     }
   }
 
-  
   startAllUplinkDevice(): void {
     const devEUIsToStart = this.selectedRow.map(device => device.devEUI);
-    if (devEUIsToStart.length > 0) {
+    if (this.allSelectedArePlaying() && this.allSelectedUplinkIsStopped()) {
       this.appService.startDeviceUplink(devEUIsToStart).subscribe({
         next: (response) => {
           console.log('All Devices uplink started:', response);
-          // alert(response.message);
+          // Update the local selectedRow array with the new status
+          this.selectedRow = this.selectedRow.map(device => ({ ...device, uplinkStatus: 'running' }));
+
+          // Update the grid's internal data
+          this.gridApi.applyTransaction({ update: this.selectedRow });
+          this.gridApi.refreshCells({ rowNodes: this.gridApi.getSelectedNodes(), force: true });
         },
         error: (error) => {
           console.error('Error starting devices uplink:', error);
@@ -166,17 +189,22 @@ export class DevicesComponent implements OnInit {
         }
       });
     } else {
-      alert('Please select devices to start uplink.');
+      alert('Please select joined devices with stopped uplinks.');
     }
   }
 
   stopAllUplinkDevice(): void {
     const devEUIsToStop = this.selectedRow.map(device => device.devEUI);
-    if (devEUIsToStop.length > 0) {
+    if (this.allSelectedArePlaying() && this.allSelectedUplinkIsRunning()) {
       this.appService.stopDeviceUplink(devEUIsToStop).subscribe({
         next: (response) => {
           console.log('All devices uplink stopped:', response);
-          // alert(response.message);
+          // Update the local selectedRow array with the new status
+          this.selectedRow = this.selectedRow.map(device => ({ ...device, uplinkStatus: 'stopped' }));
+          
+          // Update the grid's internal data
+          this.gridApi.applyTransaction({ update: this.selectedRow });
+          this.gridApi.refreshCells({ rowNodes: this.gridApi.getSelectedNodes(), force: true });
         },
         error: (error) => {
           console.error('Error stopping devices uplink:', error);
@@ -184,11 +212,10 @@ export class DevicesComponent implements OnInit {
         }
       });
     } else {
-      alert('Please select devices to stop uplink.');
+      alert('Please select joined devices with running uplinks.');
     }
   }
   
-
   navigateToEditDevicePage(): void {
     if (this.selectedRow && this.selectedRow.length === 1) {
       const devEUI = this.selectedRow[0].devEUI;
@@ -207,7 +234,6 @@ export class DevicesComponent implements OnInit {
         this.appService.deleteDevice(id).subscribe({
           next: (response) => {
             console.log('Device deleted:', response);
-            // alert('Device deleted successfully!');
             this.loadDevices();
           },
           error: (error) => {
@@ -217,5 +243,10 @@ export class DevicesComponent implements OnInit {
         })
       );
     }
+  }
+
+  public onViewLogs(devEui: string): void {
+    this.selectedDevEuiForLogs = devEui;
+    this.showLogPanel = true;
   }
 }

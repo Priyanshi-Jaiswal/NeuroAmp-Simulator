@@ -19,11 +19,6 @@
       </button>
       <div>
         <mat-menu #menu="matMenu" class="customize">
-          <div class="menu-item" (click)="goToSettingsPage()">
-            <mat-icon class="icons" matTooltip="Settings">settings</mat-icon>
-            <span style="color: rgb(243, 243, 243);">Settings</span>
-          </div>
-          
           <div (click)="logout()" mat-menu-item>
             <mat-icon style="color: rgb(243, 243, 243);">cloud_off</mat-icon>
             <span style="color: rgb(243, 243, 243);">logout</span>

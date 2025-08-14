@@ -87,8 +87,6 @@ export class AppService {
     return this.http.get(`${this.apiUrl}/gateway_bridge/config`);
   }
 
-  
-
   // New methods for bulk device actions
   startDevice(deviceList: string[]): Observable<any> {
     return this.http.post(`${this.apiUrl}/v1/lns/devices/join`, { deviceList });
@@ -104,6 +102,10 @@ export class AppService {
 
   stopDeviceUplink(deviceList: string[]): Observable<any> {
     return this.http.post(`${this.apiUrl}/v1/lns/stopuplink`, { deviceList });
+  }
+
+  public getDeviceLogs(devEui: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/devices/${devEui}/logs`)
   }
 
   startGateway(gatewayId: string): Observable<any> {

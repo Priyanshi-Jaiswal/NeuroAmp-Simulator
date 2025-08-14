@@ -25,19 +25,19 @@
                 </div>
 
                 <div class="icon-group left-group">
-                    <button mat-icon-button class="button" matTooltip="Start All" (click)="startSelectedDevices()">
+                    <button mat-icon-button class="button" matTooltip="Join Request" (click)="startSelectedDevices()" [disabled]="!hasSelection() || !allSelectedArePaused()">
                         <mat-icon>play_arrow</mat-icon>
                     </button>
                 
-                    <button mat-icon-button class="button" matTooltip="Stop All" (click)="stopSelectedDevices()">
+                    <button mat-icon-button class="button" matTooltip="Unjoin Request" (click)="stopSelectedDevices()" [disabled]="!hasSelection() || !allSelectedArePlaying()">
                         <mat-icon>pause</mat-icon>
                     </button>
 
-                    <button mat-icon-button class="button" matTooltip="Start Uplinks" (click)="startAllUplinkDevice()">
-                        <mat-icon style="transform: rotate(180deg);">get_app</mat-icon>
+                    <button mat-icon-button class="button" matTooltip="Start Uplinks" (click)="startAllUplinkDevice()" [disabled]="!hasSelection() || !allSelectedUplinkIsStopped() || !allSelectedArePlaying()">
+                        <mat-icon>publish</mat-icon>
                       </button>
 
-                      <button mat-icon-button class="button" matTooltip="Stop Uplinks" (click)="stopAllUplinkDevice()">
+                      <button mat-icon-button class="button" matTooltip="Stop Uplinks" (click)="stopAllUplinkDevice()" [disabled]="!hasSelection() || !allSelectedUplinkIsRunning() || !allSelectedArePlaying()">
                         <mat-icon>cancel</mat-icon>
                       </button>
                 </div>
@@ -56,6 +56,13 @@
         (rowSelected)="onRowSelected($event)" 
         (gridReady)="onGridReady($event)">
     </ag-grid-angular>
+
+    <app-log-panel
+    *ngIf="showLogPanel"
+    [devEui]="selectedDevEuiForLogs"
+    (closePanel)="showLogPanel = false">
+</app-log-panel>
+
 
     <div *ngIf="isLoading" class="loading-overlay">
         Loading devices...

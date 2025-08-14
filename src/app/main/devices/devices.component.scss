@@ -7,6 +7,8 @@
 
 h6 {
     margin: 0;
+    margin-left: 5px;
+    font-size: 1.25rem;
 }
 
 .buttons {
@@ -23,27 +25,22 @@ h6 {
 }
 
 .left-group {
-    border-right: 1px solid #ccc; // Border after the "Load" icon group
-    // padding-right: 10px; // Add more padding to separate from the border
-    // margin-right: 10px; // Margin after the border
+    border-right: 1px solid #ccc; 
 }
 
 .middle-group {
-    border-right: 1px solid #ccc; // Border after the "Create", "Edit" icon group
-    // padding-right: 10px; // Add more padding to separate from the border
-    // margin-right: 10px; // Margin after the border
+    border-right: 1px solid #ccc;
 }
 
 .button {
-    // background-color: #f3f3f3;;
     color:  rgb(31, 49, 71);
-    // margin: 1px 0 0 1px;
 }    
 
 .ag-theme-quartz {
     --ag-background-color: rgb(243, 243, 243);
-    --ag-header-background-color: rgb(225, 225, 225);
-    --ag-row-gover-color: rgb(225, 225, 225);
+    --ag-header-background-color: rgb(31, 49, 71);
+    --ag-row-gover-color: rgb(225, 225, 225);  
+    --ag-header-foreground-color:  rgb(243, 243, 243);
 }
 
 .table {

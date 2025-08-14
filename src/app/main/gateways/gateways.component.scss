@@ -7,6 +7,8 @@
 
 h6 {
     margin: 0;
+    margin-left: 5px;
+    font-size: 1.25rem;
 }
 
 .buttons {
@@ -39,8 +41,9 @@ h6 {
 
 .ag-theme-quartz {
     --ag-background-color: rgb(243, 243, 243);
-    --ag-header-background-color: rgb(225, 225, 225);
-    --ag-row-gover-color: rgb(225, 225, 225);
+    --ag-header-background-color: rgb(31, 49, 71);
+    --ag-row-gover-color: rgb(225, 225, 225);  
+    --ag-header-foreground-color:  rgb(243, 243, 243);
 }
 
 .table {

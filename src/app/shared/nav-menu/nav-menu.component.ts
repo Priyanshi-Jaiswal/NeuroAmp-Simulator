@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { AppService } from '../../app.service';
 import { filter } from 'rxjs/operators';
+import { Event as RouterEvent } from '@angular/router';
 
 @Component({
   selector: 'app-nav-menu',
@@ -18,6 +19,9 @@ export class NavMenuComponent implements OnInit {
   constructor(private router: Router, private appService: AppService) { }
 
   ngOnInit() {
+    const currentUrl = this.router.url;
+    this.selectedMenu = currentUrl.split('?')[0];
+    
     this.appService.sideNavData.subscribe((res: any) => {
       if (res === "") {
         this.isShowSideNav = true;
@@ -28,12 +32,13 @@ export class NavMenuComponent implements OnInit {
         this.isShowSideNav = false;
       }
     });
-    this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        this.selectedMenu = event.url;
-        if (event.urlAfterRedirects.includes('?')) {
-          this.selectedMenu = this.selectedMenu.split('?')[0]          
-        }
+    
+    this.router.events.pipe(
+      filter((event: RouterEvent): event is NavigationEnd => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      this.selectedMenu = event.url;
+      if (event.urlAfterRedirects.includes('?')) {
+        this.selectedMenu = this.selectedMenu.split('?')[0]      
       }
     });    
   }
@@ -46,39 +51,11 @@ export class NavMenuComponent implements OnInit {
     this.router.navigate(['/gatewayBridge'])
   }
 
-  insights() {
-    this.router.navigate(['/insights'])
-  }
-
-  testbed() {
-    this.router.navigate(['/testbed'])
-  }
-
-  myWorkSpace() {
-    this.router.navigate(['/workSpace'])
-  }
-
   devices() {
     this.router.navigate(['/devices'])
   }
 
   gateways() {
     this.router.navigate(['/gateways'])
-  }
-
-  testCaseManagement() {
-    this.router.navigate(['/testCaseManagement']);
-  }
-
-  settings() {
-
-  }
-
-  document() {
-    this.router.navigate(['/fileUpload']);
-  }
-
-  jira() {
-    this.router.navigate(['/jira'])
   }
 }

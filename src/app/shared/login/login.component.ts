@@ -27,7 +27,7 @@ export class LoginComponent implements OnInit {
       sessionStorage.setItem('userName', username);
 
       if (username === 'admin' && password === 'admin') {
-        this.router.navigate(['/askMe'])
+        this.router.navigate(['/devices'])
       } else {
         alert('Incorrect Username or Password');
         this.loginForm.reset();
